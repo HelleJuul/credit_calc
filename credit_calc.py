@@ -1,45 +1,78 @@
-credit_principal = 'Credit principal: 1000'
-final_output = 'The credit has been repaid!'
-first_month = 'Month 1: repaid 250'
-second_month = 'Month 2: repaid 250'
-third_month = 'Month 3: repaid 500'
+import math
 
-#print(credit_principal)
-#print(first_month)
-#print(second_month)
-#print(third_month)
-#print(final_output)
-
-
-print("Enter the credit principal: ")
-principal = int(input())
+# A = annuity payment
+# P = credit principal
+# i = nominal (monthly) interest rate. Is a floating value (not percent)
+# n = number of payments (i.e. number of months)
 
 print("What do you want to calculate?")
-print('type "m" - for number of monthly payments,')
-print('type "p" - for the monthly payment:')
-calc_type = input()
-if calc_type == "m":
+print('type "n" for number of monthly payments,')
+print('type "a" for annuity monthly payment amount,')
+print('type "p" for credit principal:')
+
+answer = input()
+
+if answer == "n":       # We want to calculate n
+    print("Enter the credit principal:")
+    P = float(input())
     print("Enter the monthly payment:")
-    monthly_payment = int(input())
+    A = float(input())
+    print("Enter the credit interest:")
+    interest = float(input())
 
-    if monthly_payment == principal:
-        print("It will take 1 month to repay the credit")
+    # calculate the monthly interest rate as a decimal number
+    i = (interest / 100) / 12
 
-    elif principal % monthly_payment == 0:
-        months = principal // monthly_payment
+    # calculate the number of payments
+    n_decimal = math.log(A / (A - i * P), 1 + i)
+
+    # round up to the nearest integer
+    n = math.ceil(n_decimal)
+
+    # create the output in years and months
+    if n == 1:
+        print(f"It will take 1 month to repay this credit!")
+    elif n < 12:
+        print(f"It will take {n} months to repay this credit!")
+    elif n == 12:
+        print(f"It will take 1 year to repay this credit!")
+    elif n < 24:
+        months = n % 12
+        print(f"It will take 1 year and {months} months to repay this credit!")
     else:
-        months = principal // monthly_payment + 1
+        years = n // 12
+        months = n % 12
+        print(f"It will take {years} years and {months} months to repay this credit!")
 
-    print(f"\nIt will take {months} months to repay the credit ")
 
-elif calc_type == "p":
-    print("Enter the number of months:")
-    months = int(input())
+elif answer == "a":     # We want to calculate A
+    print("Enter the credit principal:")
+    P = float(input())
+    print("Enter the number of periods:")
+    n = int(input())
+    print("Enter the credit interest:")
+    interest = float(input())
 
-    if principal % months == 0:
-        monthly_payment = principal // months
-        print(f"\nYour monthly payment = {monthly_payment}")
-    else:
-        monthly_payment = principal // months + 1
-        last_payment = principal - (months - 1) * monthly_payment
-        print(f"\nYour monthly payment = {monthly_payment} and the last payment = {last_payment}.")
+    # Calculate the monthly interest as a decimal number
+    i = (interest / 100) / 12
+
+    # Calculate the monthly payments
+    A = P * (i * math.pow(1 + i, n)) / (math.pow(1 + i, n) - 1)
+
+    print(f"Your monthly payment = {math.ceil(A)}!")
+
+elif answer == "p":     # We want to calculate P
+    print("Enter the annuity payment:")
+    A = float(input())
+    print("Enter the number of periods:")
+    n = int(input())
+    print("Enter the credit interest:")
+    interest = float(input())
+
+    # Calculate the monthly interest as a decimal number
+    i = (interest / 100) / 12
+
+    # Calculate the principal credit
+    P = A / ((i * math.pow(1 + i, n)) / (math.pow(1 + i, n) - 1))
+
+    print(f"Your credit principal = {round(P)}!")
